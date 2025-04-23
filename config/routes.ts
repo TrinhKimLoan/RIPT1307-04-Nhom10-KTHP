@@ -53,6 +53,11 @@
 		name: 'Learn online', 
 		component: '@/pages/Learn Online/index',
 	},	
+	{
+		path: '/CLB',
+		name: 'List CLB',
+		component: '@/pages/CLB/index',
+	},
 	// {
 	// 	path: '/study-tracker',
 	// 	name: 'ToDoList',
