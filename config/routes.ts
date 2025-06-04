@@ -58,6 +58,36 @@
 		name: 'List CLB',
 		component: '@/pages/CLB/index',
 	},
+	{
+    path: '/forum',
+    name: 'Diễn đàn học thuật',
+    icon: 'BookOutlined',
+    routes: [
+      {
+        path: '/forum/List',
+        name: 'Danh sách bài viết',
+        component: '@/pages/AcademicForum/Forum/index',
+      },
+      {
+        path: '/forum/create',
+        name: 'Tạo bài viết',
+        component: '@/pages/AcademicForum/Forum/CreatePost',
+      },
+      {
+        path: '/forum/:postId',
+        name: 'Chi tiết bài viết',
+        component: '@/pages/AcademicForum/Forum/[postId]',
+        hideInMenu: true, // Ẩn khỏi menu, vì đây là route động
+      },
+    ],
+ 	},
+	{
+		path: '/TagForum/tag-management',
+		name: 'Quản lý Tag',
+		icon: 'TagsOutlined',
+		component: '@/pages/AcademicForum/tag-management/Tags',
+	},
+
 	// {
 	// 	path: '/study-tracker',
 	// 	name: 'ToDoList',

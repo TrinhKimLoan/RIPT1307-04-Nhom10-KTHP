@@ -19,6 +19,7 @@ const TinyEditor = (props: {
 	/** Cố định toolbar nếu nội dung soạn thảo quá dài, phải dùng thanh cuộn.
 	 * Khi dùng nhiều editor trên 1 màn bắt buộc phải tắt option này đi */
 	stickyToolbar?: boolean;
+	onSave?: (val: string) => void;
 }) => {
 	const {
 		value,
