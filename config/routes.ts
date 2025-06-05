@@ -37,6 +37,12 @@
 		icon: 'ArrowsAltOutlined',
 	},
 
+	{
+		name: 'Admin',
+		path: 'admin',
+		component: '@/pages/Admin/Dashboard',
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
