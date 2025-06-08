@@ -39,8 +39,15 @@
 
 	{
 		name: 'Admin',
-		path: 'admin',
-		component: '@/pages/Admin/Dashboard',
+		path: '/admin',
+		icon: 'crown',
+		routes: [
+			{
+				name: 'Bảng điều khiển',
+				path: 'dashboard',
+				component: '@/pages/Admin/Dashboard',
+			},
+		],
 	},
 
 	// DANH MUC HE THONG
