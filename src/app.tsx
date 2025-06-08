@@ -16,6 +16,7 @@ import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { currentRole } from './utils/ip';
+import MyRightContent from './components/MyRightContent';
 
 /**  loading */
 export const initialStateConfig = {
@@ -76,7 +77,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</OIDCBounder>
 		),
 		noFound: <NotFoundContent />,
-		rightContentRender: () => <RightContent />,
+		rightContentRender: () => <MyRightContent />,
 		disableContentMargin: false,
 
 		footerRender: () => <Footer />,
