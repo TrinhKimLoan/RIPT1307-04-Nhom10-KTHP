@@ -47,6 +47,16 @@
 				path: 'dashboard',
 				component: '@/pages/Admin/Dashboard',
 			},
+			{
+				name: 'Quản lý người dùng',
+				path: 'users',
+				component: '@/pages/Admin/User',
+			},
+			{
+				name: 'Quản lý bài đăng',
+				path: 'posts',
+				component: '@/pages/Admin/Post',
+			},
 		],
 	},
 

@@ -13,7 +13,7 @@ interface PostsLineChartProps {
 
 
 const PostsLineChart: React.FC<PostsLineChartProps> = ({ data }) => (
-	<Card title='Biểu đồ bài đăng theo tháng' style={{ marginBottom: 24 }}>
+	<Card title='Hoạt động đăng bài' style={{ marginBottom: 24 }}>
 		<ResponsiveContainer width='100%' height={300}>
 			<LineChart data={data}>
 				<CartesianGrid stroke='#eee' strokeDasharray='5 5' />
