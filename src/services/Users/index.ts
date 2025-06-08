@@ -1,15 +1,36 @@
-import type { User } from './typings';
+import { UserRole, type User } from './typings.d';
 import { hashPassword } from '@/services/Auth/hash';
 
 const STORAGE_KEY = 'users';
 
-export const getUsers = (): User[] => {
-  const data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : [];
+// Admin mặc định
+const defaultAdmin: User = {
+  id: 'admin-default', 
+  fullName: 'Administrator',
+  email: 'admin@forum.com',
+  password: hashPassword('adminnum1'),
+  role: UserRole.Admin,
+  isLocked: false,
 };
 
 export const saveUsers = (users: User[]) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+};
+
+export const getUsers = (): User[] => {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  let users: User[] = raw ? JSON.parse(raw) : [];
+
+  const adminExists = users.some(
+    (u) => u.email === defaultAdmin.email && u.role === 'admin'
+  );
+
+  if (!adminExists) {
+    users = [...users, defaultAdmin];
+    saveUsers(users);
+  }
+
+  return users;
 };
 
 export const findUserByEmail = (email: string): User | undefined => {
@@ -48,8 +69,15 @@ export const updateUser = (user: User): User => {
 };
 
 export const deleteUser = (userId: string) => {
-  const users = getUsers();
-  saveUsers(users.filter(user => user.id !== userId));
+  const users = getUsers().filter((u) => u.id !== userId);
+
+  // Kiểm tra nếu admin bị xóa thì thêm lại
+  const stillHasAdmin = users.some(
+    (u) => u.email === defaultAdmin.email && u.role === 'admin'
+  );
+  const newUsers = stillHasAdmin ? users : [...users, defaultAdmin];
+
+  saveUsers(newUsers);
 };
 
 export const toggleUserLock = (userId: string, isLocked: boolean): User | null => {
