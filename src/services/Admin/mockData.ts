@@ -103,6 +103,15 @@ export const mockComments: Comment[] = [
   },
 ];
 
+export const postByMonthMockData = [
+  { month: '2025-01'},
+  { month: '2025-02'},
+  { month: '2025-03'},
+  { month: '2025-04'},
+  { month: '2025-05'},
+  { month: '2025-06'},
+];
+
 export function seedMockDataToLocalStorage() {
   localStorage.setItem('users', JSON.stringify(mockUsers));
   localStorage.setItem('posts', JSON.stringify(mockPosts));

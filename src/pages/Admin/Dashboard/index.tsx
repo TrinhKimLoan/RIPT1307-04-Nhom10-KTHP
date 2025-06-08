@@ -5,7 +5,7 @@ import StatsOverview from './components/StatsOverview';
 import PostsLineChart from './components/PostsLineChart';
 import TagStatsTable from './components/TagStatsTable';
 import TopPostsList from './components/TopPostsList';
-import {mockUsers, mockTags, mockPosts, mockComments } from '@/services/Admin/mockData'; // Import mock data for development
+import {mockUsers, mockTags, mockPosts, mockComments, postByMonthMockData } from '@/services/Admin/mockData'; // Import mock data for development
 const { Title } = Typography;
 
 const DashboardPage: React.FC = () => {
@@ -18,6 +18,27 @@ const DashboardPage: React.FC = () => {
 		topPosts = [],
 		tags = [],
 	} = useModel('Admin.dashboard') || {};
+
+	
+	// Hàm để lấy số lượng bài viết theo tháng	
+	function getPostCountByMonth(months, posts) {
+	// Đếm số bài theo tháng
+	const countMap = posts.reduce((acc, post) => {
+		const month = post.createdAt.slice(0, 7); // lấy 'YYYY-MM'
+		acc[month] = (acc[month] || 0) + 1;
+		return acc;
+	}, {});
+
+	// Kết hợp với mảng tháng, đảm bảo tháng nào cũng có count (0 nếu ko có bài)
+	return months.map(({ month }) => ({
+		month,
+		count: countMap[month] || 0,
+	}));
+	}
+
+	//Dùng hàm để lấy dữ liệu cho biểu đồ
+	const chartData = getPostCountByMonth(postByMonthMockData, mockPosts);
+	console.log(chartData);
 
 
 
@@ -120,7 +141,7 @@ const DashboardPage: React.FC = () => {
 
 			<StatsOverview userCounts={userCounts} totalPosts={totalPosts} totalComments={totalComments} />
 
-			<PostsLineChart data={postByMonth} />
+			<PostsLineChart data={chartData} />
 
 			<TagStatsTable data={tagStats} tags={tags} />
 

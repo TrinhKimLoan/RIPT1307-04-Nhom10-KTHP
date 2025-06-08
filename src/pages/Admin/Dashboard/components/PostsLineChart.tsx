@@ -11,6 +11,7 @@ interface PostsLineChartProps {
 	data: PostByMonth[];
 }
 
+
 const PostsLineChart: React.FC<PostsLineChartProps> = ({ data }) => (
 	<Card title='Biểu đồ bài đăng theo tháng' style={{ marginBottom: 24 }}>
 		<ResponsiveContainer width='100%' height={300}>
