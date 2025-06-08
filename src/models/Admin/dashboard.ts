@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getUsers, getPosts, getComments } from '@/services/Admin/dashboard';
 
 import type { Post, Comment, User, Tag, PostByMonth, TagStats } from '@/services/Admin/admin.types';
 
-/** Tính tổng số user phân theo role */
+/** 
+ * Tính tổng số user phân theo role (student/teacher) 
+ * Trả về: { students: number, teachers: number }
+ */
 function calculateUserCountByRole(users: User[]) {
 	return users.reduce(
 		(acc, user) => {
@@ -15,17 +18,24 @@ function calculateUserCountByRole(users: User[]) {
 	);
 }
 
-/** Tính tổng số bài đăng */
+/** 
+ * Tính tổng số bài đăng trong hệ thống 
+ */
 function calculateTotalPosts(posts: Post[]) {
 	return posts.length;
 }
 
-/** Tính tổng số bình luận */
+/** 
+ * Tính tổng số bình luận trong hệ thống 
+ */
 function calculateTotalComments(comments: Comment[]) {
 	return comments.length;
 }
 
-/** Tính thống kê bài đăng theo tháng (YYYY-MM) */
+/** 
+ * Tính thống kê số bài đăng theo từng tháng (dạng YYYY-MM) 
+ * Trả về mảng { month: string, count: number }
+ */
 function calculatePostByMonth(posts: Post[]): PostByMonth[] {
 	const map: Record<string, number> = {};
 	posts.forEach((post) => {
@@ -38,20 +48,23 @@ function calculatePostByMonth(posts: Post[]): PostByMonth[] {
 		.map(([month, count]) => ({ month, count }));
 }
 
-/** Tính số bài và bình luận theo tag */
+/**
+ * Tính thống kê theo từng tag:
+ * - Tổng số bài viết sử dụng tag đó
+ * - Tổng số bình luận của các bài viết có tag đó
+ */
 function calculateTagStats(posts: Post[], comments: Comment[], tags: Tag[]): TagStats[] {
 	const postCountMap: Record<string, number> = {};
 	const commentCountMap: Record<string, number> = {};
 
-	// Đếm bài theo tag
+	// Đếm số bài theo tag
 	posts.forEach((post) => {
 		post.tagIds.forEach((tagId) => {
 			postCountMap[tagId] = (postCountMap[tagId] || 0) + 1;
 		});
 	});
 
-	// Đếm bình luận theo tag
-	// Bình luận liên quan đến bài có tag đó
+	// Đếm số bình luận theo tag (bình luận của các bài có tag)
 	comments.forEach((comment) => {
 		const post = posts.find((p) => p.id === comment.postId);
 		if (post) {
@@ -61,6 +74,7 @@ function calculateTagStats(posts: Post[], comments: Comment[], tags: Tag[]): Tag
 		}
 	});
 
+	// Tổng hợp kết quả theo từng tag
 	return tags.map((tag) => ({
 		tagId: tag.id,
 		postCount: postCountMap[tag.id] || 0,
@@ -68,7 +82,10 @@ function calculateTagStats(posts: Post[], comments: Comment[], tags: Tag[]): Tag
 	}));
 }
 
-/** Lấy các bài đăng nổi bật theo tổng lượt tương tác (votes) */
+/**
+ * Trả về danh sách các bài đăng nổi bật nhất theo tổng số vote
+ * Mặc định lấy top 5
+ */
 function getTopPosts(posts: Post[], topN = 5) {
 	const postsWithScore = posts.map((post) => {
 		const voteSum = Object.values(post.votes || {}).reduce((a, b) => a + b, 0);
@@ -78,39 +95,51 @@ function getTopPosts(posts: Post[], topN = 5) {
 	return postsWithScore.slice(0, topN);
 }
 
-//useModel
+/**
+ * Hàm khởi tạo dữ liệu ban đầu cho dashboard từ localStorage
+ * Gồm: danh sách users, posts, comments, tags
+ */
+function initDashboardModel() {
+	const users = getUsers(); // từ service
+	const posts = getPosts(); // từ service
+	const comments = getComments(); // từ service
+
+	// Lấy dữ liệu tags từ localStorage
+	const rawTags = localStorage.getItem('tags');
+	const tags: Tag[] = rawTags ? JSON.parse(rawTags) : [];
+
+	return { users, posts, comments, tags };
+}
+
+/**
+ * useDashboardModel:
+ * Custom hook cung cấp toàn bộ dữ liệu đã tính toán cho dashboard
+ * KHÔNG sử dụng useEffect – chỉ load một lần khi component mount
+ */
 export function useDashboardModel() {
-	// Dữ liệu localStorage
-	const [users, setUsers] = useState<User[]>([]);
-	const [posts, setPosts] = useState<Post[]>([]);
-	const [comments, setComments] = useState<Comment[]>([]);
-	const [tags, setTags] = useState<Tag[]>([]);
+	// Dữ liệu khởi tạo từ localStorage
+	const { users, posts, comments, tags } = initDashboardModel();
 
-	// Load dữ liệu từ localStorage khi mount
-	useEffect(() => {
-		setUsers(getUsers());
-		setPosts(getPosts());
-		setComments(getComments());
+	// Lưu vào useState để hỗ trợ re-render khi cần
+	const [userState] = useState(users);
+	const [postState] = useState(posts);
+	const [commentState] = useState(comments);
+	const [tagState] = useState(tags);
 
-		// Giả sử tags cũng lưu localStorage (key: 'tags')
-		const rawTags = localStorage.getItem('tags');
-		if (rawTags) setTags(JSON.parse(rawTags));
-		else setTags([]);
-	}, []);
+	// Dữ liệu thống kê phục vụ UI
+	const userCounts = calculateUserCountByRole(userState);
+	const totalPosts = calculateTotalPosts(postState);
+	const totalComments = calculateTotalComments(commentState);
+	const postByMonth = calculatePostByMonth(postState);
+	const tagStats = calculateTagStats(postState, commentState, tagState);
+	const topPosts = getTopPosts(postState, 5);
 
-	// Tính toán dữ liệu để UI hiển thị
-	const userCounts = calculateUserCountByRole(users);
-	const totalPosts = calculateTotalPosts(posts);
-	const totalComments = calculateTotalComments(comments);
-	const postByMonth = calculatePostByMonth(posts);
-	const tagStats = calculateTagStats(posts, comments, tags);
-	const topPosts = getTopPosts(posts, 5);
-
+	// Trả ra tất cả dữ liệu cần thiết
 	return {
-		users,
-		posts,
-		comments,
-		tags,
+		users: userState,
+		posts: postState,
+		comments: commentState,
+		tags: tagState,
 		userCounts,
 		totalPosts,
 		totalComments,
