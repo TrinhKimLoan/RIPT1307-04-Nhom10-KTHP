@@ -49,7 +49,7 @@
 		hideInMenu: true,
 	},
 	{
-		path: '/posts',
+		path: '/postposts',
 		name: 'Add Post',
 		component: './NewPost',
 	},

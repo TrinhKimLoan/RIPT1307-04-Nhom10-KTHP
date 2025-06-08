@@ -33,7 +33,8 @@ export default () => {
     setTags(getTagsByCategory(categoryId));
   };
 
-  const savePost = (postData: Omit<Post, 'id' | 'createdAt' | 'votes'>) => {
+  const savePost = (postData: Omit<Post, 'id' | 'createdAt' | 'votes'>): boolean => {
+  try {
     if (currentPost) {
       updatePostService(currentPost.id, postData);
     } else {
@@ -41,7 +42,12 @@ export default () => {
     }
     setEditorVisible(false);
     loadPosts();
-  };
+    return true; // Trả về true nếu thành công
+  } catch (error) {
+    console.error('Lỗi khi lưu bài đăng:', error);
+    return false; // Trả về false nếu thất bại
+  }
+};
 
   const editPost = (post: Post) => {
     setCurrentPost(post);
@@ -85,8 +91,6 @@ export default () => {
     deleteTagCategory(id);
     loadTagCategories(); // Tải lại danh sách phân loại
   };
-
-  
 
   return {
     loadInitialData,
