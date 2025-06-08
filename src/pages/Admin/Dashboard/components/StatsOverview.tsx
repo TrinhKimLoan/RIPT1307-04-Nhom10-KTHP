@@ -16,8 +16,8 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userCounts, totalPosts, t
 			<Card>
 				<Title level={4}>
 					<UserOutlined style={{ marginRight: 8, color: '#1890ff' }} />
-						Sinh viên
-					</Title>
+					Sinh viên
+				</Title>
 				<Text strong>{userCounts.students}</Text>
 			</Card>
 		</Col>

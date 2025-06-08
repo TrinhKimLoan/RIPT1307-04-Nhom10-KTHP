@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Table } from 'antd';
-import { Tag } from '@/services/Admin/admin.types'; 
+import { Tag } from '@/services/Admin/admin.types';
 
 interface TagStat {
 	tagId: string;
