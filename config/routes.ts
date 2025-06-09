@@ -36,6 +36,24 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
+	{
+		path: '/login',
+		name: 'Login',
+		component: './Login',
+		hideInMenu: true,
+	},
+	{
+		path: '/register',
+		name: 'Register',
+		component: './Register',
+		hideInMenu: true,
+	},
+	{
+		path: '/postposts',
+		name: 'Add Post',
+		component: './NewPost',
+	},
+
 
 	// DANH MUC HE THONG
 	// {

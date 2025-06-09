@@ -1,0 +1,91 @@
+import { UserRole, type User } from './typings.d';
+import { hashPassword } from '@/services/Auth/hash';
+
+const STORAGE_KEY = 'users';
+
+// Admin mặc định
+const defaultAdmin: User = {
+  id: 'admin-default', 
+  fullName: 'Administrator',
+  email: 'admin@forum.com',
+  password: hashPassword('adminnum1'),
+  role: UserRole.Admin,
+  isLocked: false,
+};
+
+export const saveUsers = (users: User[]) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+};
+
+export const getUsers = (): User[] => {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  let users: User[] = raw ? JSON.parse(raw) : [];
+
+  const adminExists = users.some(
+    (u) => u.email === defaultAdmin.email && u.role === 'admin'
+  );
+
+  if (!adminExists) {
+    users = [...users, defaultAdmin];
+    saveUsers(users);
+  }
+
+  return users;
+};
+
+export const findUserByEmail = (email: string): User | undefined => {
+  return getUsers().find(user => user.email === email);
+};
+
+export const addUser = (user: Omit<User, 'id' | 'isLocked'>): User => {
+  const users = getUsers();
+  const newUser: User = {
+    ...user,
+    id: Date.now().toString(),
+    password: hashPassword(user.password),
+    isLocked: false
+  };
+  saveUsers([...users, newUser]);
+  return newUser;
+};
+
+export const updateUser = (user: User): User => {
+  const users = getUsers();
+  const index = users.findIndex(u => u.id === user.id);
+  
+  if (index === -1) return user;
+  
+  // Giữ nguyên trạng thái khóa nếu không được cung cấp
+  const updatedUser = {
+    ...users[index],
+    ...user,
+    isLocked: user.isLocked !== undefined ? user.isLocked : users[index].isLocked
+  };
+  
+  const updatedUsers = [...users];
+  updatedUsers[index] = updatedUser;
+  saveUsers(updatedUsers);
+  return updatedUser;
+};
+
+export const deleteUser = (userId: string) => {
+  const users = getUsers().filter((u) => u.id !== userId);
+
+  // Kiểm tra nếu admin bị xóa thì thêm lại
+  const stillHasAdmin = users.some(
+    (u) => u.email === defaultAdmin.email && u.role === 'admin'
+  );
+  const newUsers = stillHasAdmin ? users : [...users, defaultAdmin];
+
+  saveUsers(newUsers);
+};
+
+export const toggleUserLock = (userId: string, isLocked: boolean): User | null => {
+  const users = getUsers();
+  const user = users.find(u => u.id === userId);
+  
+  if (!user) return null;
+  
+  const updatedUser = { ...user, isLocked };
+  return updateUser(updatedUser);
+};
