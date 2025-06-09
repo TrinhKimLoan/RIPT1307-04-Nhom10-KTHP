@@ -69,15 +69,9 @@
         component: '@/pages/AcademicForum/Forum/index',
       },
       {
-        path: '/forum/create',
-        name: 'Tạo bài viết',
-        component: '@/pages/AcademicForum/Forum/CreatePost',
-      },
-      {
         path: '/forum/:postId',
         name: 'Chi tiết bài viết',
         component: '@/pages/AcademicForum/Forum/[postId]',
-        hideInMenu: true, // Ẩn khỏi menu, vì đây là route động
       },
     ],
  	},

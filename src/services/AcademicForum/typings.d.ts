@@ -50,3 +50,10 @@ export interface Comment {
     [userId: string]: 1 | -1;
   };
 }
+
+export interface CommentSectionProps {
+  postId: string;
+  comments: Comment[];
+  userId: string;
+  onVote: (id: string, v: 1 | -1) => void;
+}

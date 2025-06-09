@@ -2,7 +2,7 @@ import { Modal, Checkbox, Select, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { getTags } from '@/services/AcademicForum/tagService';
 import { getCurrentUser, updateUser } from '@/services/AcademicForum/userService';
-import { Tags } from '@/models/forumModels';
+import { Tags } from '@/services/AcademicForum/typings';
 
 export default function TagPopup() {
   const [visible, setVisible] = useState(false);

@@ -1,14 +1,25 @@
-import { Tags, TagCategory } from '@/models/forumModels';
+import { Tags, TagCategory } from './typings';
 
-export const getTags = (): Tags[] => JSON.parse(localStorage.getItem('tags') || '[]');
-export const getCategories = (): TagCategory[] => JSON.parse(localStorage.getItem('tagCategories') || '[]');
+const STORAGE_KEY = 'tags';
+
+export const getTags = (): Tags[] => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+export const getCategories = (): TagCategory[] => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
 export const addTag = (tag: Tags) => {
   const tags = getTags();
-  localStorage.setItem('tags', JSON.stringify([...tags, tag]));
+  tags.push(tag);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tags));
+};
+export const updateTag = (tag: Tags) => {
+  const tags = getTags().map(t => t.id === tag.id ? tag : t);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tags));
+};
+export const deleteTag = (id: string) => {
+  const tags = getTags().filter(t => t.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tags));
 };
 
 export const addCategory = (category: TagCategory) => {
   const categories = getCategories();
-  localStorage.setItem('tagCategories', JSON.stringify([...categories, category]));
+  localStorage.setItem('STORAGE_KEY', JSON.stringify([...categories, category]));
 };

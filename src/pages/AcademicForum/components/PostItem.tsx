@@ -1,9 +1,9 @@
 import { Card, Space, Tag } from 'antd';
 import { Link } from 'umi';
-import VoteButton from '../VoteButton';
+import VoteButton from './VoteButton';
 import { getTags } from '@/services/AcademicForum/tagService';
 import { useEffect, useState } from 'react';
-import { Tags } from '@/models/forumModels';
+import { Tags } from '@/services/AcademicForum/typings';
 
 export default function PostItem({ post, userId, onVote }: any) {
   const [tags, setTags] = useState<Tags[]>([]);

@@ -1,15 +1,13 @@
 import { Table, Input, Tag, Space } from 'antd';
 import { useState, useEffect } from 'react';
-import { getPosts } from '@/services/AcademicForum/postService';
 import { getTags } from '@/services/AcademicForum/tagService';
-import { Tags, Post } from '@/models/forumModels';
+import { Tags, Post } from '@/services/AcademicForum/typings';
 
 export default function ForumList() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [tags, setTags] = useState<Tags[]>([]);
 
   useEffect(() => {
-    setPosts(getPosts());
     setTags(getTags());
   }, []);
 

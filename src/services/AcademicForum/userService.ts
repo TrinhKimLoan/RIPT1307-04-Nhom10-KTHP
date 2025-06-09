@@ -1,4 +1,4 @@
-import { User } from '@/models/forumModels';
+import { User } from './typings';
 
 const KEY = 'users';
 const TOKEN_KEY = 'token_user';
@@ -22,3 +22,7 @@ export const getUserById = (id: string): User | undefined => {
   return users.find((u: User) => u.id === id);
 };
 
+export const getCurrentUserId = (): string => {
+  const user = getCurrentUser();
+  return user?.id || '';
+};
