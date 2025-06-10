@@ -1,6 +1,9 @@
 import type { Post} from './typings';
 import { getUsers } from '@/services/Users'; // dùng nếu cần
 import { sendEmailOnNewPost } from '../emailServices';
+import { UserRole } from '../Users/typings.d';
+import { getCurrentUser } from '@/services/Users';
+import { getUserById } from '@/services/Users';
 
 const POSTS_KEY = 'posts';
 
@@ -38,8 +41,31 @@ export const updatePost = (id: string, updates: Partial<Post>): Post | null => {
   return updatedPost;
 };
 
+// export const deletePost = (id: string) => {
+//   savePosts(getPosts().filter(post => post.id !== id));
+// };
 export const deletePost = (id: string) => {
-  savePosts(getPosts().filter(post => post.id !== id));
+  const posts = getPosts();
+  const post = posts.find(p => p.id === id);
+  
+  if (!post) return;
+  
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  
+  // Kiểm tra quyền
+  const canDelete = 
+    currentUser.role === UserRole.Admin ||
+    post.authorId === currentUser.id ||
+    (currentUser.role === UserRole.Teacher && 
+      getUserById(post.authorId)?.role === UserRole.Student);
+  
+  if (!canDelete) {
+    console.warn('Unauthorized delete attempt');
+    return;
+  }
+  
+  savePosts(posts.filter(spost => spost.id !== id));
 };
 
 export const votePost = (postId: string, userId: string, vote: 1 | -1) => {

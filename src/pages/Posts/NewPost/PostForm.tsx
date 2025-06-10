@@ -1,17 +1,32 @@
 import { Form, Button, Checkbox, message } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import FormEditor from './FormEditor';
 import FormCategory from './FormCategory';
 import FormTags from './FormTag';
+import { history } from 'umi';
 
 interface PostFormProps {
   authorId: string;
   onSubmit: (post: any) => boolean;
   isEditing: boolean;
+  initialValues?: any;
 }
 
-const PostForm: React.FC<PostFormProps> = ({ authorId, onSubmit, isEditing }) => {
+const PostForm: React.FC<PostFormProps> = ({
+  authorId,
+  onSubmit,
+  isEditing,
+  initialValues,
+}) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    } else {
+      form.resetFields();
+    }
+  }, [initialValues]);
 
   const onFinish = (values: any) => {
     const success = onSubmit({
@@ -20,10 +35,8 @@ const PostForm: React.FC<PostFormProps> = ({ authorId, onSubmit, isEditing }) =>
     });
 
     if (success) {
-      message.success(isEditing ? 'Cập nhật bài đăng thành công!' : 'Bạn đã đăng bài thành công!');
-      form.resetFields();
-    } else {
-      message.error('Đã xảy ra lỗi khi lưu bài đăng');
+      form.resetFields(); // reset sau khi submit thành công
+      history.push('/forum');
     }
   };
 
@@ -32,7 +45,10 @@ const PostForm: React.FC<PostFormProps> = ({ authorId, onSubmit, isEditing }) =>
       form={form}
       layout="vertical"
       onFinish={onFinish}
-      initialValues={{ notifyOnNewComment: true }}
+      initialValues={{
+        notifyOnNewComment: true,
+        ...initialValues, // nếu có currentPost, sẽ gộp vào
+      }}
     >
       <Form.Item
         label="Tiêu đề"
@@ -45,11 +61,15 @@ const PostForm: React.FC<PostFormProps> = ({ authorId, onSubmit, isEditing }) =>
       <FormEditor />
       <FormCategory form={form} />
       <FormTags form={form} />
+
       <Form.Item name="notifyOnNewComment" valuePropName="checked">
         <Checkbox>Gửi email khi có bình luận mới</Checkbox>
       </Form.Item>
+
       <Form.Item>
-        <Button type="primary" htmlType="submit">Đăng bài</Button>
+        <Button type="primary" htmlType="submit">
+          {isEditing ? 'Cập nhật bài viết' : 'Đăng bài'}
+        </Button>
       </Form.Item>
     </Form>
   );

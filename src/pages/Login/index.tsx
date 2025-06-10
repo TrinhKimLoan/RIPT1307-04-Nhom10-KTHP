@@ -18,7 +18,7 @@ export default function LoginPage() {
     message.success('Đăng nhập thành công!');
     history.push('/');
 
-    // ✅ Phân quyền điều hướng
+    // Phân quyền điều hướng
     if (user.role === 'admin') {
       history.push('/admin');
     } else {

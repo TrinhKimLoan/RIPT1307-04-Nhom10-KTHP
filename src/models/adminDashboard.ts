@@ -3,12 +3,10 @@ import { useState, useEffect } from 'react';
 import {  getVoteCount } from '@/services/Admin/index';
 import {getPosts} from '@/services/Posts/index';
 import { getUsers } from '@/services/Users';
-import { getCommentCount, getComments } from '@/services/Comments';
+import { getComments } from '@/services/Comments';
 import {getTags} from '@/services/Tags/index';
 import type { Post } from '@/services/Posts/typings.d';
-import type {User} from '@/services/Users/typings.d';
-import type { Comment } from '@/services/Comments/typings.d';
-import type {Tags} from '@/services/Tags/typings.d'
+import type {Tags} from '@/services/Tags/typings.d';
 
 export interface TagStat {
   tagId: string;

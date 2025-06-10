@@ -95,9 +95,16 @@ export const getUserById = (id: string): User | undefined => {
 };
 
 export const getCurrentUser = (): User | null => {
-  const id_now_user = localStorage.getItem('currentUser');
-  const users = getUsers();
-  return users.find(u => u.id === id_now_user) || null;
+  const userData = localStorage.getItem('currentUser');
+  if (!userData) return null;
+  
+  try {
+    const currentUser = JSON.parse(userData);
+    const users = getUsers();
+    return users.find(u => u.id === currentUser.id) || null;
+  } catch (e) {
+    return null;
+  }
 };
 
 export const getCurrentUserId = (): string => {

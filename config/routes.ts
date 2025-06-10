@@ -1,4 +1,6 @@
-﻿export default [
+﻿import access from "@/access";
+
+export default [
 	{
 		path: '/user',
 		layout: false,
@@ -52,6 +54,7 @@
 		path: '/postposts',
 		name: 'Add Post',
 		component: './Posts/NewPost',
+		access: 'canPost',
 		icon: 'QuestionCircleOutlined',
 	},
 	// {
@@ -69,6 +72,7 @@
 		name: 'Admin',
 		path: '/admin',
 		icon: 'crown',
+		access: 'canAdmin',
 		routes: [
 			{
 				name: 'Bảng điều khiển',

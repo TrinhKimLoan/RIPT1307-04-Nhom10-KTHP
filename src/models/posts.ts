@@ -114,6 +114,7 @@ export default () => {
 
   return {
     loadInitialData,
+    setCurrentPost,
     refreshPosts,
     posts,
     editorVisible,

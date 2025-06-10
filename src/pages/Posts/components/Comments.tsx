@@ -194,7 +194,24 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       />
 
       <div style={{ marginTop: 24 }}>
-        <TinyEditor onChange={setNewContent} />
+        
+        {currentUser ? (
+        <>
+          <TinyEditor onChange={setNewContent} />
+          <div style={{ marginTop: 8 }}>
+            <Button type="primary" onClick={handleAddComment}>
+              {replyTo ? 'Gửi phản hồi' : 'Gửi bình luận'}
+            </Button>
+            {replyTo && (
+              <Button onClick={() => setReplyTo(null)} style={{ marginLeft: 8 }}>
+                Hủy
+              </Button>
+            )}
+          </div>
+        </>
+      ) : (
+        <p style={{ color: '#888', fontStyle: 'italic' }}>Vui lòng đăng nhập để bình luận.</p>
+      )}
         <div style={{ marginTop: 8 }}>
           <Button type="primary" onClick={handleAddComment}>
             {replyTo ? 'Gửi phản hồi' : 'Gửi bình luận'}

@@ -3,9 +3,13 @@ import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 
 export default function VoteButton({ item, userId, onVote }: {
   item: { votes: { [userId: string]: 1 | -1 } };
-  userId: string;
+  userId?: string;
   onVote: (value: 1 | -1) => void;
 }) {
+  if (!userId) {
+    return <span>{Object.values(item.votes).reduce((a, b) => a + b, 0)} lượt vote</span>;
+  }
+
   const voted = item.votes[userId];
   const count = Object.values(item.votes).reduce((a, b) => a + b, 0);
 
