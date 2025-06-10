@@ -21,6 +21,7 @@ export function getComments(): Comment[] {
 export function getTags(): Tag[] {
 	return getDataFromStorage<Tag>('tags');
 }
+
 /** Lưu dữ liệu vào localStorage */
 function saveDataToStorage<T>(key: string, data: T[]) {
 	localStorage.setItem(key, JSON.stringify(data));

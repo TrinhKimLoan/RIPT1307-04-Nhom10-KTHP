@@ -45,12 +45,13 @@
 			{
 				name: 'Bảng điều khiển',
 				path: 'dashboard',
+				icon: 'DashboardOutlined',
 				component: '@/pages/Admin/Dashboard',
 			},
 			{
 				name: 'Quản lý người dùng',
 				path: 'users',
-				component: '@/pages/Admin/User',
+				component: '@/pages/Admin/Users',
 			},
 			{
 				name: 'Quản lý bài đăng',

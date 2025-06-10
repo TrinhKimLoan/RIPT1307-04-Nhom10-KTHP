@@ -1,5 +1,6 @@
 import type { User, Post, Comment, Tag } from '@/services/Admin/admin.types';
 
+//Mock cho dashboard
 export const mockUsers: User[] = [
 	{
 		id: 'u1',
@@ -9,6 +10,7 @@ export const mockUsers: User[] = [
 		role: 'student',
 		subscribedTags: ['t1', 't2'],
 		notifyOnNewComment: true,
+		status: 'active',
 	},
 	{
 		id: 'u2',
@@ -16,6 +18,9 @@ export const mockUsers: User[] = [
 		email: 'thib@example.com',
 		password: '123456',
 		role: 'teacher',
+		subscribedTags: ['t1'],
+		notifyOnNewComment: false,
+		status: 'active',
 	},
 	{
 		id: 'u3',
@@ -23,6 +28,9 @@ export const mockUsers: User[] = [
 		email: 'c@gmail.com',
 		password: '123456',
 		role: 'teacher',
+		subscribedTags: ['t2', 't3'],
+		notifyOnNewComment: true,
+		status: 'active',
 	},
 	{
 		id: 'u4',
@@ -30,15 +38,27 @@ export const mockUsers: User[] = [
 		email: 'dd@gmail.com',
 		password: '123456',
 		role: 'student',
+		subscribedTags: ['t1', 't2'],
+		notifyOnNewComment: false,
+		status: 'active',
 	},
 ];
 
+// Mock cho các danh mục và thẻ
 export const mockTags: Tag[] = [
 	{ id: 't1', name: 'React', categoryId: 'c1' },
 	{ id: 't2', name: 'TypeScript', categoryId: 'c1' },
 	{ id: 't3', name: 'UI/UX', categoryId: 'c2' },
+	{ id: 't4', name: 'JavaScript', categoryId: 'c1' },
+	{ id: 't5', name: 'CSS', categoryId: 'c2' },
+	{ id: 't6', name: 'HTML', categoryId: 'c2' },
+	{ id: 't7', name: 'Node.js', categoryId: 'c1' },
+	{ id: 't8', name: 'Express.js', categoryId: 'c1' },
+	{ id: 't9', name: 'MongoDB', categoryId: 'c3' },
+	{ id: 't10', name: 'GraphQL', categoryId: 'c3' },
 ];
 
+// Mock cho các bài viết
 export const mockPosts: Post[] = [
 	{
 		id: 'p1',
@@ -90,8 +110,19 @@ export const mockPosts: Post[] = [
 		votes: {},
 		notifyOnNewComment: false,
 	},
+	{
+		id: 'p5',
+		title: 'hehehehehehehehehehe',
+		content: 'Có ai không?',
+		authorId: 'u3',
+		createdAt: new Date('2025-06-13').toISOString(),
+		tagIds: ['t3'],
+		votes: { u1: 1 },
+		notifyOnNewComment: false,
+	},
 ];
 
+// Mock cho các bình luận
 export const mockComments: Comment[] = [
 	{
 		id: 'c1',
@@ -101,8 +132,17 @@ export const mockComments: Comment[] = [
 		createdAt: new Date('2025-05-02').toISOString(),
 		votes: { u1: 1 },
 	},
+	{
+		id: 'c1',
+		postId: 'p3',
+		authorId: 'u2',
+		content: 'Thank kiu nhiều nhen!',
+		createdAt: new Date('2025-05-04').toISOString(),
+		votes: { u1: 1 },
+	},
 ];
 
+// Mock cho thống kê bài viết theo tháng
 export const postByMonthMockData = [
 	{ month: '2025-01' },
 	{ month: '2025-02' },
@@ -110,8 +150,15 @@ export const postByMonthMockData = [
 	{ month: '2025-04' },
 	{ month: '2025-05' },
 	{ month: '2025-06' },
+	{ month: '2025-07' },
+	{ month: '2025-08' },
+	{ month: '2025-09' },
+	{ month: '2025-10' },
+	{ month: '2025-11' },
+	{ month: '2025-12' },
 ];
 
+// Hàm khởi tạo dữ liệu mẫu vào localStorage
 export function seedMockDataToLocalStorage() {
 	localStorage.setItem('users', JSON.stringify(mockUsers));
 	localStorage.setItem('posts', JSON.stringify(mockPosts));
