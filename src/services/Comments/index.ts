@@ -60,3 +60,14 @@ export const voteComment = (commentId: string, userId: string, vote: 1 | -1) => 
   saveComments(all);
   return c;
 };
+
+// 1 số hàm của Admin
+// Lấy danh sách bài đăng
+export const getPostComments = (postId: string): Comment[] => {
+	return getComments().filter((c) => c.postId === postId);
+};
+
+// Lấy danh sách bình luận theo trang
+export const getCommentCount = (postId: string): number => {
+	return getComments().filter((c) => c.postId === postId).length;
+};

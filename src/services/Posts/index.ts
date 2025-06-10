@@ -62,3 +62,24 @@ export const getPostById = (id: string) => {
   const posts = getPosts(); // Lấy tất cả bài viết từ localStorage
   return posts.find(post => post.id === id);
 };
+
+// 1 số hàm của Admin
+
+// Lấy danh sách bài đăng theo trang
+export const getVoteCount = (postId: string): number => {
+	const posts = getPosts();
+	const post = posts.find((p) => p.id === postId);
+	if (!post) return 0;
+	return Object.values(post.votes).reduce((sum, v) => sum + v, 0);
+};
+
+
+// Tìm kiếm bài đăng theo tiêu đề
+export const searchPostsByTitle = (keyword: string): Post[] => {
+	return getPosts().filter((p) => p.title.toLowerCase().includes(keyword.toLowerCase()));
+};
+
+// Lọc bài đăng theo thẻ
+export const filterPostsByTag = (tagId: string): Post[] => {
+	return getPosts().filter((p) => p.tagIds.includes(tagId));
+};

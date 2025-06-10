@@ -104,3 +104,57 @@ export const getCurrentUserId = (): string => {
   const user = getCurrentUser();
   return user?.id || '';
 };
+
+// 1 số hàm của Admin
+// Hàm cập nhật thông tin người dùng
+export function updateUserAd(id: string, updated: Partial<User>): void {
+	const users = getUsers();
+	const index = users.findIndex((u) => u.id === id);
+	if (index !== -1) {
+		users[index] = { ...users[index], ...updated };
+		saveUsers(users);
+	}
+}
+
+// Hàm tìm kiếm người dùng theo tên hoặc email
+export function toggleLockUser(id: string): void {
+	const users = getUsers();
+	const index = users.findIndex((u) => u.id === id);
+	if (index !== -1) {
+		users[index].isLocked = !users[index].isLocked;
+		saveUsers(users);
+	}
+}
+
+// Hàm reset mật khẩu người dùng
+export function resetPassword(id: string): string | undefined {
+	const users = getUsers();
+	const index = users.findIndex((u) => u.id === id);
+	if (index !== -1) {
+		const newPassword = generateRandomPassword();
+		users[index].password = newPassword;
+		saveUsers(users);
+		return newPassword;
+	}
+	return undefined;
+}
+
+// Hàm tạo mật khẩu ngẫu nhiên
+function generateRandomPassword(length = 8): string {
+	const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+	let password = '';
+	for (let i = 0; i < length; i++) {
+		password += chars.charAt(Math.floor(Math.random() * chars.length));
+	}
+	return password;
+}
+
+// Hàm phê duyệt người dùng
+export function approveUser(id: string): void {
+	updateUserAd(id, { status : 'active' });
+}
+
+// Hàm từ chối người dùng
+export function rejectUser(id: string): void {
+	updateUserAd(id, { status: 'locked' });
+}

@@ -17,4 +17,6 @@ export interface User {
   lastPopupAt?: string;          // ISO string để kiểm tra "mỗi ngày chỉ hiện 1 lần"
   token?: string; // Token tạm sau khi đăng nhập
   subscribedTags?: string[]; // Các tag người dùng quan tâm (id tag)
+  evidenceUrl?: string; // Minh chứng là giảng viên (chỉ khi role = 'teacher')
+	status?: 'active' | 'pending' | 'locked'; // Trạng thái tài khoản, có thể là 'active', 'pending' hoặc 'locked'
 }

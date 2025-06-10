@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { 
   getUsers, 
   saveUsers, 
@@ -8,9 +8,12 @@ import {
   findUserByEmail
 } from '@/services/Users/index';
 import type { User } from '@/services/Users/typings';
+import * as userService from '@/services/Users/index';
 
 export default () => {
   const [users, setUsers] = useState<User[]>(getUsers());
+  const [searchText, setSearchText] = useState('');
+  const [filterRole, setFilterRole] = useState<string | undefined>(undefined);
 
   const refreshUsers = () => {
     const updatedUsers = getUsers();
@@ -55,8 +58,61 @@ export default () => {
     return users.find(user => user.id === userId);
   };
 
+  // 1 số hàm của Admin
+  const toggleLockUser = useCallback(
+		(id: string) => {
+			userService.toggleLockUser(id);
+			refreshUsers();
+		},
+		[refreshUsers],
+	);
+
+  const resetPassword = useCallback(
+		(id: string): string | undefined => {
+			const newPass = userService.resetPassword(id);
+			refreshUsers();
+			return newPass;
+		},
+		[refreshUsers],
+	);
+
+  const approveUser = useCallback(
+		(id: string) => {
+			userService.approveUser(id);
+			refreshUsers();
+		},
+		[refreshUsers],
+	);
+  const rejectUser = useCallback(
+		(id: string) => {
+			userService.rejectUser(id);
+			refreshUsers();
+		},
+		[refreshUsers],
+	);
+  // Hàm set filter tìm kiếm
+	const setSearch = (text: string) => {
+		setSearchText(text);
+	};
+
+	const setRoleFilter = (role?: string) => {
+		setFilterRole(role);
+	};
+
+	// Dữ liệu filtered
+	const filteredUsers = users.filter((u) => {
+		const matchSearch =
+			u.fullName.toLowerCase().includes(searchText.toLowerCase()) ||
+			u.email.toLowerCase().includes(searchText.toLowerCase());
+
+		const matchRole = filterRole ? u.role === filterRole : true;
+
+		return matchSearch && matchRole;
+	});
+
   return {
     users,
+    setSearch,
     refreshUsers,
     addUser,
     updateUser,
@@ -64,6 +120,15 @@ export default () => {
     lockUser,
     unlockUser,
     findUserByEmail,
-    getUserById
+    getUserById,
+    toggleLockUser,
+    resetPassword,
+    approveUser,
+    rejectUser,
+    searchText,
+    filterRole,
+    setRoleFilter,
+    filteredUsers
+    
   };
 };

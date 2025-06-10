@@ -52,6 +52,7 @@
 		path: '/postposts',
 		name: 'Add Post',
 		component: './Posts/NewPost',
+		icon: 'QuestionCircleOutlined',
 	},
 	// {
 	// 	path: '/posts/:id',
@@ -63,6 +64,30 @@
 	// 	name: 'List of Post',
 	// 	component: './Posts/PostList',
 	// },
+
+	{
+		name: 'Admin',
+		path: '/admin',
+		icon: 'crown',
+		routes: [
+			{
+				name: 'Bảng điều khiển',
+				path: 'dashboard',
+				icon: 'DashboardOutlined',
+				component: './Admin/Dashboard',
+			},
+			{
+				name: 'Quản lý người dùng',
+				path: 'users',
+				component: './Admin/User',
+			},
+			{
+				name: 'Quản lý bài đăng',
+				path: 'posts',
+				component: './Admin/Post',
+			},
+		],
+	},
 
 	{
 		path: '/forum',

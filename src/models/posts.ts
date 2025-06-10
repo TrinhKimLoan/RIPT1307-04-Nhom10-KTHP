@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   getPosts, 
   createPost as createPostService, 
@@ -8,11 +8,19 @@ import {
   getPostById
 } from '@/services/Posts/index';
 import type { Post } from '@/services/Posts/typings';
+import * as postService from '@/services/Comments/index';
+import type { Comment } from '@/services/Comments/typings';
+import type {CreatePostPayload } from '@/services/Admin/admin.types';
+import { createPost } from '@/services/Posts/index';
 
 export default () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [editorVisible, setEditorVisible] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
+  
+  const refreshPosts = () => setPosts(getPosts());
+  
+  useEffect(() => refreshPosts(), []);
 
   // Hàm load dữ liệu ban đầu
   const loadInitialData = () => {
@@ -88,9 +96,25 @@ export default () => {
       });
     }
   };
+  // 1 số hàm của Admin
+  const getComments = (postId: string): Comment[] => {
+		return postService.getPostComments(postId);
+	};
+  // Thêm bài viết
+	const addPost = useCallback(
+		(payload: CreatePostPayload): Post => {
+			const newPost2 = createPost(payload);
+			refreshPosts();
+			return newPost2;
+		},
+		[refreshPosts],
+	);
+
+  const getCommentCount = postService.getCommentCount;
 
   return {
     loadInitialData,
+    refreshPosts,
     posts,
     editorVisible,
     currentPost,
@@ -104,6 +128,9 @@ export default () => {
     getById,
     fetchPosts,
     vote,
-    fetchById
+    fetchById,
+    getComments,
+    addPost,
+    getCommentCount
   };
 };
