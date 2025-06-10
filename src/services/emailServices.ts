@@ -1,5 +1,5 @@
 import emailjs from '@emailjs/browser';
-import { EMAIL_CONFIG } from 'config/emailEnv';
+import { EMAIL_CONFIG } from '../../config/emailEnv';
 import type { Post } from './Posts/typings.d';
 import type { User } from './Users/typings.d';
 
@@ -9,7 +9,7 @@ import type { User } from './Users/typings.d';
  */
 export const sendEmailOnNewComment = (post: Post, user: User) => {
   if (!user.email || !user.fullName) return;
-
+  console.log('[🔍 EmailJS] Số người sẽ nhận email bài đăng mới:', user.email);
   emailjs
     .send(
       EMAIL_CONFIG.SERVICE_ID,

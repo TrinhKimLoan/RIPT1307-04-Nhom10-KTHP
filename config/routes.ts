@@ -51,7 +51,42 @@
 	{
 		path: '/postposts',
 		name: 'Add Post',
-		component: './NewPost',
+		component: './Posts/NewPost',
+	},
+	// {
+	// 	path: '/posts/:id',
+	// 	name: 'View Post',
+	// 	component: '@/pages/Posts/[id]/index.tsx',
+	// },
+	// {
+	// 	path: '/posts-lists',
+	// 	name: 'List of Post',
+	// 	component: './Posts/PostList',
+	// },
+
+	{
+		path: '/forum',
+		name: 'Diễn đàn học thuật',
+		icon: 'BookOutlined',
+		routes: [
+		{
+			path: '/forum',
+			name: 'Danh sách bài viết',
+			component: './Posts/PostList/index.tsx',
+		},
+		{
+			path: '/forum/:postId',
+			name: 'Chi tiết bài viết',
+			component: './Posts/PostList/[postId]',
+			hideInMenu: true,
+		},
+		],
+ 	},
+	{
+		path: '/TagForum/tag-management',
+		name: 'Quản lý Tag',
+		icon: 'TagsOutlined',
+		component: './Posts/Tags',
 	},
 
 

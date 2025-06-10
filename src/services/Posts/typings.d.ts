@@ -11,14 +11,3 @@ export interface Post {
     [userId: string]: 1 | -1;
   };
 }
-
-export interface TagCategory {
-  id: string;
-  name: string;
-}
-
-export interface Tag {
-  id: string;
-  name: string;
-  categoryId: string;
-}

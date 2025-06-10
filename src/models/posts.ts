@@ -4,34 +4,22 @@ import {
   createPost as createPostService, 
   updatePost as updatePostService,
   deletePost as deletePostService,
-  getTagCategories,
-  getTagsByCategory,
-  createTag,
-  createTagCategory,
-  deleteTag,
-  deleteTagCategory
+  votePost,
+  getPostById
 } from '@/services/Posts/index';
-import type { Post, Tag, TagCategory } from '@/services/Posts/typings';
+import type { Post } from '@/services/Posts/typings';
 
 export default () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
   const [editorVisible, setEditorVisible] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
 
-    // Hàm load dữ liệu ban đầu
+  // Hàm load dữ liệu ban đầu
   const loadInitialData = () => {
     setPosts(getPosts());
-    setTagCategories(getTagCategories());
   };
   
   const loadPosts = () => setPosts(getPosts());
-  const loadTagCategories = () => setTagCategories(getTagCategories());
-  
-  const loadTagsForCategory = (categoryId: string) => {
-    setTags(getTagsByCategory(categoryId));
-  };
 
   const savePost = (postData: Omit<Post, 'id' | 'createdAt' | 'votes'>): boolean => {
   try {
@@ -59,57 +47,63 @@ export default () => {
     setEditorVisible(true);
   };
 
-  const handleCreateTag = (tagName: string, categoryId: string) => {
-    const newTag = createTag({ name: tagName, categoryId });
-    loadTagsForCategory(categoryId);
-    return newTag;
-  };
-
-  const handleCreateTagCategory = (categoryName: string) => {
-    const newCategory = createTagCategory({ name: categoryName });
-    setTagCategories([...tagCategories, newCategory]);
-    return newCategory;
-  };
-
   // Thêm hàm xóa bài
   const removePost = (id: string) => {
     deletePostService(id);
     loadPosts(); // Tải lại danh sách sau khi xóa
   };
 
-  // Thêm hàm xóa tag
-  const removeTag = (id: string) => {
-    deleteTag(id);
-    // Cập nhật lại danh sách tag nếu đang ở chế độ chỉnh sửa
-    if (currentPost) {
-      setTags(getTagsByCategory(currentPost.tagCategoryId));
+  const updatePost = (updatedPost: Post) => {
+  updatePostService(updatedPost.id, updatedPost);
+  loadPosts(); // Refresh lại danh sách
+  };
+
+  const getById = (id: string): Post | undefined => {
+  return posts.find(p => p.id === id);
+  };
+
+  const fetchPosts = () => {
+    const stored = getPosts(); // lấy từ localStorage
+    setPosts(stored);
+  };
+
+  const vote = (postId: string, userId: string, voteValue: 1 | -1) => {
+    const updated = votePost(postId, userId, voteValue);
+    if (updated) {
+      setPosts(getPosts());
     }
   };
 
-  // Thêm hàm xóa phân loại tag
-  const removeTagCategory = (id: string) => {
-    deleteTagCategory(id);
-    loadTagCategories(); // Tải lại danh sách phân loại
+  const fetchById = (id: string) => {
+    const post = getPostById(id);
+    if (post) {
+      // Cập nhật state
+      setPosts(prev => {
+        const existing = prev.find(p => p.id === id);
+        if (existing) {
+          return prev.map(p => p.id === id ? post : p);
+        } else {
+          return [...prev, post];
+        }
+      });
+    }
   };
 
   return {
     loadInitialData,
     posts,
-    tagCategories,
-    tags,
     editorVisible,
     currentPost,
     loadPosts,
-    loadTagCategories,
-    loadTagsForCategory,
     savePost,
     editPost,
     newPost,
     setEditorVisible,
-    handleCreateTag,
-    handleCreateTagCategory,
     removePost,
-    removeTag,
-    removeTagCategory
+    updatePost,
+    getById,
+    fetchPosts,
+    vote,
+    fetchById
   };
 };

@@ -17,6 +17,13 @@ export default function LoginPage() {
     login(user);
     message.success('Đăng nhập thành công!');
     history.push('/');
+
+    // ✅ Phân quyền điều hướng
+    if (user.role === 'admin') {
+      history.push('/admin');
+    } else {
+      history.push('/forum');
+    }
   };
 
   return (

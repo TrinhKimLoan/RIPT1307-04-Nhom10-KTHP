@@ -3,13 +3,13 @@ import { useModel } from 'umi';
 import { useEffect, useMemo, useState } from 'react';
 
 const FormTags = ({ form }: { form: any }) => {
-  const { tags, handleCreateTag } = useModel('posts');
+  const { tags, handleCreateTag } = useModel('tags');
 
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState<{ value: string }[]>([]);
 
   const selectedCategory = Form.useWatch('tagCategoryId', form);
-  const selectedTags = Form.useWatch('tags', form) || [];
+  const selectedTags = Form.useWatch('tagIds', form) || [];
 
   const availableTags = useMemo(() => {
     return tags.filter((tag) => tag.categoryId === selectedCategory);
@@ -41,13 +41,13 @@ const FormTags = ({ form }: { form: any }) => {
     }
 
     if (existing && !currentTags.includes(existing.id)) {
-      form.setFieldsValue({ tags: [...currentTags, existing.id] });
+      form.setFieldsValue({ tagIds: [...currentTags, existing.id] });
       return;
     }
 
     if (!existing) {
       const newTag = handleCreateTag(name.trim(), selectedCategory);
-      form.setFieldsValue({ tags: [...currentTags, newTag.id] });
+      form.setFieldsValue({ tagIds: [...currentTags, newTag.id] });
     }
 
     setInputValue('');
@@ -55,12 +55,12 @@ const FormTags = ({ form }: { form: any }) => {
 
   const removeTag = (id: string) => {
     const updated = selectedTags.filter((tagId: string) => tagId !== id);
-    form.setFieldsValue({ tags: updated });
+    form.setFieldsValue({ tagIds: updated });
   };
 
   return (
     <Form.Item
-      name="tags"
+      name="tagIds"
       label="Tags"
       rules={[
         { required: true, message: 'Vui lòng chọn ít nhất một tag' },

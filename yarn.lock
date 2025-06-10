@@ -2897,6 +2897,11 @@
   "resolved" "https://registry.npmjs.org/@types/unist/-/unist-2.0.8.tgz"
   "version" "2.0.8"
 
+"@types/uuid@^10.0.0":
+  "integrity" "sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ=="
+  "resolved" "https://registry.npmjs.org/@types/uuid/-/uuid-10.0.0.tgz"
+  "version" "10.0.0"
+
 "@types/warning@^3.0.0":
   "integrity" "sha512-t/Tvs5qR47OLOr+4E9ckN8AmP2Tf16gWq+/qA4iUGS/OOyHVO8wv2vjJuX8SNOUTJyWb+2t7wJm6cXILFnOROA=="
   "resolved" "https://registry.npmjs.org/@types/warning/-/warning-3.0.0.tgz"

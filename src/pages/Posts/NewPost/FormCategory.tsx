@@ -1,11 +1,17 @@
 import { Form, Select, Input, Button, message } from 'antd';
 import { useModel } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FormCategory = ({ form }: { form: any }) => {
-  const { tagCategories, handleCreateTagCategory, loadTagsForCategory } = useModel('posts');
+  const { tagCategories, handleCreateTagCategory, loadTagsForCategory, fetchTagCategories } = useModel('tags');
   const [newCategoryName, setNewCategoryName] = useState('');
+  // Load dữ liệu tag categories nếu trống
+  useEffect(() => {
+    if (!tagCategories || tagCategories.length === 0) {
+      fetchTagCategories();
+    }
+  }, []);
 
   const handleAdd = () => {
     if (!newCategoryName.trim()) return;

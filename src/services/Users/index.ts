@@ -89,3 +89,18 @@ export const toggleUserLock = (userId: string, isLocked: boolean): User | null =
   const updatedUser = { ...user, isLocked };
   return updateUser(updatedUser);
 };
+
+export const getUserById = (id: string): User | undefined => {
+  return getUsers().find(u => u.id === id);
+};
+
+export const getCurrentUser = (): User | null => {
+  const id_now_user = localStorage.getItem('currentUser');
+  const users = getUsers();
+  return users.find(u => u.id === id_now_user) || null;
+};
+
+export const getCurrentUserId = (): string => {
+  const user = getCurrentUser();
+  return user?.id || '';
+};

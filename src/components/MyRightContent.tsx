@@ -33,6 +33,11 @@ const MyRightContent: React.FC = () => {
 
   const renderLoggedInMenu = (
     <Menu>
+      {user?.role === UserRole.Admin && (
+        <Menu.Item key="admin" onClick={() => history.push('/admin')}>
+          Trang quản trị
+        </Menu.Item>
+      )}
       <Menu.Item key="logout" danger onClick={logout}>
         Đăng xuất
       </Menu.Item>
