@@ -1,121 +1,113 @@
-import { useState, useEffect } from 'react';
-import { getUsers, getPosts, getComments } from '@/services/Admin/dashboard';
+import { useState } from 'react';
+import {
+  getPosts,
+  createPost as createPostService,
+  updatePost as updatePostService,
+  deletePost as deletePostService,
+  getTagCategories,
+  getTagsByCategory,
+  createTag,
+  createTagCategory,
+  deleteTag,
+  deleteTagCategory
+} from '@/services/Admin/dashboard';
+import type { Post, Tag, TagCategory } from '@/services/Admin/admin.types';
 
-import type { Post, Comment, User, Tag, PostByMonth, TagStats } from '@/services/Admin/admin.types';
+export default () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [editorVisible, setEditorVisible] = useState(false);
+  const [currentPost, setCurrentPost] = useState<Post | null>(null);
 
-/** Tính tổng số user phân theo role */
-function calculateUserCountByRole(users: User[]) {
-	return users.reduce(
-		(acc, user) => {
-			if (user.role === 'student') acc.students += 1;
-			else if (user.role === 'teacher') acc.teachers += 1;
-			return acc;
-		},
-		{ students: 0, teachers: 0 },
-	);
-}
+  // Load ban đầu
+  const loadInitialData = () => {
+    setPosts(getPosts());
+    setTagCategories(getTagCategories());
+  };
 
-/** Tính tổng số bài đăng */
-function calculateTotalPosts(posts: Post[]) {
-	return posts.length;
-}
+  const reloadPosts = () => setPosts(getPosts());
+  const reloadTagCategories = () => setTagCategories(getTagCategories());
+  const loadTagsByCategory = (categoryId: string) => setTags(getTagsByCategory(categoryId));
 
-/** Tính tổng số bình luận */
-function calculateTotalComments(comments: Comment[]) {
-	return comments.length;
-}
+  const handleSavePost = (data: Omit<Post, 'id' | 'createdAt' | 'votes'>): boolean => {
+    try {
+      if (currentPost) {
+        updatePostService(currentPost.id, data);
+      } else {
+        createPostService(data);
+      }
+      setEditorVisible(false);
+      reloadPosts();
+      return true;
+    } catch (err) {
+      console.error('Lỗi khi lưu bài viết:', err);
+      return false;
+    }
+  };
 
-/** Tính thống kê bài đăng theo tháng (YYYY-MM) */
-function calculatePostByMonth(posts: Post[]): PostByMonth[] {
-	const map: Record<string, number> = {};
-	posts.forEach((post) => {
-		const date = new Date(post.createdAt);
-		const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-		map[key] = (map[key] || 0) + 1;
-	});
-	return Object.entries(map)
-		.sort(([a], [b]) => a.localeCompare(b))
-		.map(([month, count]) => ({ month, count }));
-}
+  const startEditPost = (post: Post) => {
+    setCurrentPost(post);
+    setEditorVisible(true);
+  };
 
-/** Tính số bài và bình luận theo tag */
-function calculateTagStats(posts: Post[], comments: Comment[], tags: Tag[]): TagStats[] {
-	const postCountMap: Record<string, number> = {};
-	const commentCountMap: Record<string, number> = {};
+  const startNewPost = () => {
+    setCurrentPost(null);
+    setEditorVisible(true);
+  };
 
-	// Đếm bài theo tag
-	posts.forEach((post) => {
-		post.tagIds.forEach((tagId) => {
-			postCountMap[tagId] = (postCountMap[tagId] || 0) + 1;
-		});
-	});
+  const handleCreateTag = (name: string, categoryId: string) => {
+    const newTag = createTag({ name, categoryId });
+    loadTagsByCategory(categoryId);
+    return newTag;
+  };
 
-	// Đếm bình luận theo tag
-	// Bình luận liên quan đến bài có tag đó
-	comments.forEach((comment) => {
-		const post = posts.find((p) => p.id === comment.postId);
-		if (post) {
-			post.tagIds.forEach((tagId) => {
-				commentCountMap[tagId] = (commentCountMap[tagId] || 0) + 1;
-			});
+  const handleCreateCategory = (name: string) => {
+    const newCategory = createTagCategory({ name });
+    setTagCategories([...tagCategories, newCategory]);
+    return newCategory;
+  };
+
+  const handleDeletePost = (id: string) => {
+    deletePostService(id);
+    reloadPosts();
+  };
+
+  	const handleDeleteTag = (id: string) => {
+		const tag = tags.find(t => t.id === id);
+			deleteTag(id);
+			if (tag?.categoryId) {
+				loadTagsByCategory(tag.categoryId);
 		}
-	});
-
-	return tags.map((tag) => ({
-		tagId: tag.id,
-		postCount: postCountMap[tag.id] || 0,
-		commentCount: commentCountMap[tag.id] || 0,
-	}));
-}
-
-/** Lấy các bài đăng nổi bật theo tổng lượt tương tác (votes) */
-function getTopPosts(posts: Post[], topN = 5) {
-	const postsWithScore = posts.map((post) => {
-		const voteSum = Object.values(post.votes || {}).reduce((a, b) => a + b, 0);
-		return { ...post, score: voteSum };
-	});
-	postsWithScore.sort((a, b) => b.score - a.score);
-	return postsWithScore.slice(0, topN);
-}
-
-//useModel
-export function useDashboardModel() {
-	// Dữ liệu localStorage
-	const [users, setUsers] = useState<User[]>([]);
-	const [posts, setPosts] = useState<Post[]>([]);
-	const [comments, setComments] = useState<Comment[]>([]);
-	const [tags, setTags] = useState<Tag[]>([]);
-
-	// Load dữ liệu từ localStorage khi mount
-	useEffect(() => {
-		setUsers(getUsers());
-		setPosts(getPosts());
-		setComments(getComments());
-
-		// Giả sử tags cũng lưu localStorage (key: 'tags')
-		const rawTags = localStorage.getItem('tags');
-		if (rawTags) setTags(JSON.parse(rawTags));
-		else setTags([]);
-	}, []);
-
-	// Tính toán dữ liệu để UI hiển thị
-	const userCounts = calculateUserCountByRole(users);
-	const totalPosts = calculateTotalPosts(posts);
-	const totalComments = calculateTotalComments(comments);
-	const postByMonth = calculatePostByMonth(posts);
-	const tagStats = calculateTagStats(posts, comments, tags);
-	const topPosts = getTopPosts(posts, 5);
-
-	return {
-		users,
-		posts,
-		comments,
-		tags,
-		userCounts,
-		totalPosts,
-		totalComments,
-		postByMonth,
-		tagStats,
-		topPosts,
 	};
-}
+
+
+  const handleDeleteCategory = (id: string) => {
+    deleteTagCategory(id);
+    reloadTagCategories();
+  };
+
+  return {
+    posts,
+    tagCategories,
+    tags,
+    editorVisible,
+    currentPost,
+
+    setEditorVisible,
+    startEditPost,
+    startNewPost,
+    handleSavePost,
+
+    loadInitialData,
+    reloadPosts,
+    reloadTagCategories,
+    loadTagsByCategory,
+
+    handleCreateTag,
+    handleCreateCategory,
+    handleDeletePost,
+    handleDeleteTag,
+    handleDeleteCategory,
+  };
+};

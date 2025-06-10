@@ -1,43 +1,92 @@
-import type { User, Post, Comment, Tag } from '@/services/Admin/admin.types';
+import type { Post, Tag, TagCategory } from '@/services/Admin/admin.types';
 
-/** Lấy dữ liệu từ localStorage theo key, trả về mảng hoặc [] nếu chưa có */
-function getDataFromStorage<T>(key: string): T[] {
-	const raw = localStorage.getItem(key);
-	return raw ? JSON.parse(raw) : [];
-}
+const POSTS_KEY = 'posts';
+const TAGS_KEY = 'tags';
+const TAG_CATEGORIES_KEY = 'tagCategories';
 
-export function getUsers(): User[] {
-	return getDataFromStorage<User>('users');
-}
+// Getters
+export const getPosts = (): Post[] => {
+  const data = localStorage.getItem(POSTS_KEY);
+  return data ? JSON.parse(data) : [];
+};
 
-export function getPosts(): Post[] {
-	return getDataFromStorage<Post>('posts');
-}
+export const getTags = (): Tag[] => {
+  const data = localStorage.getItem(TAGS_KEY);
+  return data ? JSON.parse(data) : [];
+};
 
-export function getComments(): Comment[] {
-	return getDataFromStorage<Comment>('comments');
-}
+export const getTagCategories = (): TagCategory[] => {
+  const data = localStorage.getItem(TAG_CATEGORIES_KEY);
+  return data ? JSON.parse(data) : [];
+};
 
-export function getTags(): Tag[] {
-	return getDataFromStorage<Tag>('tags');
-}
+// Setters
+export const savePosts = (posts: Post[]) =>
+  localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
 
-/** Lưu dữ liệu vào localStorage */
-function saveDataToStorage<T>(key: string, data: T[]) {
-	localStorage.setItem(key, JSON.stringify(data));
-}
+export const saveTags = (tags: Tag[]) =>
+  localStorage.setItem(TAGS_KEY, JSON.stringify(tags));
 
-export function saveUsers(users: User[]) {
-	saveDataToStorage('users', users);
-}
+export const saveTagCategories = (categories: TagCategory[]) =>
+  localStorage.setItem(TAG_CATEGORIES_KEY, JSON.stringify(categories));
 
-export function savePosts(posts: Post[]) {
-	saveDataToStorage('posts', posts);
-}
+// CRUD: Post
+export const createPost = (data: Omit<Post, 'id' | 'createdAt' | 'votes'>): Post => {
+  const posts = getPosts();
+  const newPost: Post = {
+    ...data,
+    id: Date.now().toString(),
+    createdAt: new Date().toISOString(),
+    votes: {}
+  };
+  savePosts([...posts, newPost]);
+  return newPost;
+};
 
-export function saveComments(comments: Comment[]) {
-	saveDataToStorage('comments', comments);
-}
-export function saveTags(tags: Tag[]) {
-	saveDataToStorage('tags', tags);
-}
+export const updatePost = (id: string, updates: Partial<Post>): Post | null => {
+  const posts = getPosts();
+  const index = posts.findIndex(p => p.id === id);
+  if (index === -1) return null;
+
+  const updatedPost = { ...posts[index], ...updates };
+  posts[index] = updatedPost;
+  savePosts(posts);
+  return updatedPost;
+};
+
+export const deletePost = (id: string) => {
+  savePosts(getPosts().filter(post => post.id !== id));
+};
+
+// CRUD: Tag
+export const createTag = (data: Omit<Tag, 'id'>): Tag => {
+  const tags = getTags();
+  const newTag: Tag = { ...data, id: Date.now().toString() };
+  saveTags([...tags, newTag]);
+  return newTag;
+};
+
+export const deleteTag = (id: string) => {
+  const updated = getTags().filter(tag => tag.id !== id);
+  saveTags(updated);
+};
+
+// CRUD: Tag Category
+export const createTagCategory = (data: Omit<TagCategory, 'id'>): TagCategory => {
+  const categories = getTagCategories();
+  const newCategory: TagCategory = { ...data, id: Date.now().toString() };
+  saveTagCategories([...categories, newCategory]);
+  return newCategory;
+};
+
+export const deleteTagCategory = (id: string) => {
+  const updated = getTagCategories().filter(c => c.id !== id);
+  saveTagCategories(updated);
+};
+
+// Helpers
+export const getTagsByCategory = (categoryId: string) =>
+  getTags().filter(tag => tag.categoryId === categoryId);
+
+export const getTagCategoryByName = (name: string) =>
+  getTagCategories().find(c => c.name === name);
