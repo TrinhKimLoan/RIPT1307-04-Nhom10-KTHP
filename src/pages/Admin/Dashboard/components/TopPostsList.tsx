@@ -11,13 +11,7 @@ const TopPostsList: React.FC<TopPostsListProps> = ({ posts }) => (
 		<List
 			dataSource={posts}
 			renderItem={(item) => (
-				<List.Item
-					actions={[
-						<Button type='link' key='view'>
-							Xem chi tiết
-						</Button>,
-					]}
-				>
+				<List.Item actions={[ <Button type='link' key='view'>Xem chi tiết</Button>,]}>
 					<List.Item.Meta
 						title={item.title}
 						description={`Tổng điểm tương tác: ${Object.values(item.votes || {}).reduce((a, b) => a + b, 0)}`}

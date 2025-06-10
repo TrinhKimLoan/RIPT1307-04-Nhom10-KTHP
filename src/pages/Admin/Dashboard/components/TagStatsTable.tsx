@@ -16,6 +16,12 @@ interface TagStatsTableProps {
 const TagStatsTable: React.FC<TagStatsTableProps> = ({ data, tags }) => {
 	const columns = [
 		{
+			title: 'STT',
+			key: 'index',
+			align: 'center',
+			render: (_: any, __: any, index: number) => index + 1,
+		},
+		{
 			title: 'Tag',
 			dataIndex: 'tagId',
 			key: 'tagId',
@@ -27,18 +33,20 @@ const TagStatsTable: React.FC<TagStatsTableProps> = ({ data, tags }) => {
 		{
 			title: 'Số bài đăng',
 			dataIndex: 'postCount',
+			align: 'center',
 			key: 'postCount',
 		},
 		{
 			title: 'Số bình luận',
 			dataIndex: 'commentCount',
+			align: 'center',
 			key: 'commentCount',
 		},
 	];
 
 	return (
 		<Card title='Thống kê bài và bình luận theo Tag' style={{ marginBottom: 24 }}>
-			<Table dataSource={data} columns={columns} rowKey='tagId' pagination={false} bordered />
+			<Table dataSource={data} columns={columns as any} rowKey='tagId' pagination={false} bordered />
 		</Card>
 	);
 };
