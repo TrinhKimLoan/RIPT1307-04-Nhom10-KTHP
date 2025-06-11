@@ -4,7 +4,6 @@ import { useModel } from 'umi';
 import UserList from './components/UsersList';
 import UserForm from './components/UsersForm';
 import type { User } from '@/services/Users/typings.d';
-import { v4 as uuidv4 } from 'uuid';
 import { updateUserAd } from '@/services/Users';
 
 const { Option } = Select;
@@ -26,6 +25,7 @@ const UserPage: React.FC = () => {
 		filterRole, // Vai trò lọc
 		setSearch, // Hàm set từ khóa tìm kiếm
 		setRoleFilter, // Hàm set vai trò lọc
+		filteredUsers,
     } = useModel('users');
 	const [modalVisible, setModalVisible] = useState(false);
 	const [editingUser, setEditingUser] = useState<User | undefined>(undefined);
@@ -121,7 +121,7 @@ const UserPage: React.FC = () => {
 				</Button>
 			</Space>
 			<UserList
-				users={users}
+				users={filteredUsers}
 				onEdit={openEditModal}
 				onDelete={handleDelete}
 				onToggleLock={handleToggleLock}

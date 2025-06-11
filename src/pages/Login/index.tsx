@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     // Phân quyền điều hướng
     if (user.role === 'admin') {
-      history.push('/admin');
+      history.push('/admin/dashboard');
     } else {
       history.push('/forum');
     }

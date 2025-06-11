@@ -45,8 +45,8 @@ const UserList: React.FC<UserListProps> = ({
 		},
 		{
 			title: 'Tên',
-			dataIndex: 'name',
-			key: 'name',
+			dataIndex: 'fullName',
+			key: 'fullName',
 		},
 		{
 			title: 'Email',

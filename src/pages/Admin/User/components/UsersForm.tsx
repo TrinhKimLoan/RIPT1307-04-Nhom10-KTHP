@@ -18,7 +18,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialValues, onFinish }) => {
 	useEffect(() => {
 		form.setFieldsValue(
 			initialValues || {
-				name: '',
+				fullName: '',
 				email: '',
 				password: '',
 				role: 'student', // Mặc định là 'student'
@@ -28,7 +28,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialValues, onFinish }) => {
 
 	return (
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={initialValues}>
-			<Form.Item name='name' label='Tên' rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
+			<Form.Item name='fullName' label='Tên' rules={[{ required: true, message: 'Vui lòng nhập tên' }]}>
 				<Input placeholder='Nhập tên' />
 			</Form.Item>
 

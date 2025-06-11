@@ -20,24 +20,24 @@ export default [
 
 	///////////////////////////////////
 	// DEFAULT MENU
-	{
-		path: '/dashboard',
-		name: 'Dashboard',
-		component: './TrangChu',
-		icon: 'HomeOutlined',
-	},
-	{
-		path: '/gioi-thieu',
-		name: 'About',
-		component: './TienIch/GioiThieu',
-		hideInMenu: true,
-	},
-	{
-		path: '/random-user',
-		name: 'RandomUser',
-		component: './RandomUser',
-		icon: 'ArrowsAltOutlined',
-	},
+	// {
+	// 	path: '/dashboard',
+	// 	name: 'Dashboard',
+	// 	component: './TrangChu',
+	// 	icon: 'HomeOutlined',
+	// },
+	// {
+	// 	path: '/gioi-thieu',
+	// 	name: 'About',
+	// 	component: './TienIch/GioiThieu',
+	// 	hideInMenu: true,
+	// },
+	// {
+	// 	path: '/random-user',
+	// 	name: 'RandomUser',
+	// 	component: './RandomUser',
+	// 	icon: 'ArrowsAltOutlined',
+	// },
 	{
 		path: '/login',
 		name: 'Login',
